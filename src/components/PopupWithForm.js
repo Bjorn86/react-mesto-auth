@@ -6,7 +6,6 @@ function PopupWithForm({
   isOpen,
   onClose,
   onSubmit,
-  isButtonDisabled,
   isFormValid,
   ...props
 }) {
@@ -26,7 +25,7 @@ function PopupWithForm({
           action="#"
           name={`${name}`}
           id={`${name}`}
-          className={`popup__form popup__form_type_${name}`}
+          className={`form form_type_${name}`}
           noValidate
           onSubmit={onSubmit}
         >
@@ -34,7 +33,7 @@ function PopupWithForm({
           <button
             type="submit"
             form={`${name}`}
-            className="popup__btn-form-submit"
+            className="form__btn-submit"
             disabled={isFormValid ? false : true}
           >
             {buttonText}

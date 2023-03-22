@@ -12,6 +12,7 @@
 /* HEADER */
 @import url('./blocks/header/header.css');
 @import url('./blocks/header/__logo/header__logo.css');
+@import url('./blocks/header/__link/header__link.css');
 
 /* LOGO */
 @import url('./blocks/logo/logo.css');
@@ -58,14 +59,31 @@
 @import url('./blocks/popup/__img-caption/popup__img-caption.css');
 @import url('./blocks/popup/__title/popup__title.css');
 @import url('./blocks/popup/__btn-close/popup__btn-close.css');
-@import url('./blocks/popup/__form/popup__form.css');
-@import url('./blocks/popup/_type/popup__form_type_card-delete-confirmation.css');
-@import url('./blocks/popup/__form-input/popup__form-input.css');
-@import url('./blocks/popup/__form-input/_type/popup__form-input_type_error.css');
-@import url('./blocks/popup/__form-input-error/popup__form-input-error.css');
-@import url('./blocks/popup/__form-input-error/_active/popup__form-input-error_active.css');
-@import url('./blocks/popup/__btn-form-submit/popup__btn-form-submit.css');
+@import url('./blocks/popup/__status-wrapper/popup__status-wrapper.css');
+@import url('./blocks/popup/__status-icon/popup__status-icon.css');
+@import url('./blocks/popup/__status-icon/_type/popup__status-icon_type_fail.css');
+@import url('./blocks/popup/__status-icon/_type/popup__status-icon_type_success.css');
+@import url('./blocks/popup/__status-text/popup__status-text.css');
 
 /* PRELOADER */
 @import url('./blocks/preloader/preloader.css');
 @import url('./blocks/preloader/_active/preloader_active.css');
+
+/* AUTHORIZATION */
+@import url('./blocks/authorization/authorization.css');
+@import url('./blocks/authorization/__wrapper/authorization__wrapper.css');
+@import url('./blocks/authorization/__title/authorization__title.css');
+@import url('./blocks/authorization/__text/authorization__text.css');
+@import url('./blocks/authorization/__link/authorization__link.css');
+
+/* FORM */
+@import url('./blocks/form/form.css');
+@import url('./blocks/form/_place/form_place_authorization.css');
+@import url('./blocks/form/_type/form_type_card-delete-confirmation.css');
+@import url('./blocks/form/__input/form__input.css');
+@import url('./blocks/form/__input/_place/form__input_place_authorization.css');
+@import url('./blocks/form/__input/_type/form__input_type_error.css');
+@import url('./blocks/form/__input-error/form__input-error.css');
+@import url('./blocks/form/__input-error/_active/form__input-error_active.css');
+@import url('./blocks/form/__btn-submit/form__btn-submit.css');
+@import url('./blocks/form/__btn-submit/_place/form__btn-submit_place_authorization.css');

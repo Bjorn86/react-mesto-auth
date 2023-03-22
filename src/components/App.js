@@ -1,14 +1,18 @@
 import { useState, useEffect } from "react";
+import { Route, Routes } from "react-router-dom";
 // IMPORT COMPONENTS
-import Header from "./Header";
+import AppLayout from "./AppLayout";
+import Login from "./Login";
+import Register from "./Register";
 import Main from "./Main";
-import Footer from "./Footer";
 import ImagePopup from "./ImagePopup";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
 import DeleteCardPopup from "./DeleteCardPopup";
+import InfoTooltip from "./InfoTooltip";
 import Preloader from "./Preloader";
+import ProtectedRouteElement from "./ProtectedRoute";
 
 // IMPORT CONTEXT
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
@@ -23,15 +27,19 @@ function App() {
   const [isEditProfilePopupOpen, setEditProfilePopupClass] = useState(false);
   const [isAddPlacePopupOpen, setAddPlacePopupClass] = useState(false);
   const [isDeleteCardPopupOpen, setDeleteCardPopupClass] = useState(false);
+  const [isInfoTooltipPopupOpen, setInfoTooltipPopupClass] = useState(false);
   const [isEditAvatarPopupOnLoading, setEditAvatarPopupButtonText] = useState(false);
   const [isEditProfilePopupOnLoading, setEditProfilePopupButtonText] = useState(false);
   const [isAddPlacePopupOnLoading, setAddPlacePopupButtonText] = useState(false);
   const [isDeleteCardPopupOnLoading, setDeleteCardPopupButtonText] = useState(false);
+  const [isLoginLoading, setLoginLoading] = useState(false);
+  const [isRegistrLoading, setRegistrLoading] = useState(false);
   const [isPreloaderActive, setPreloaderClass] = useState(true);
   const [selectedCard, setSelectedCard] = useState(null);
   const [cardToDelete, setCardToDelete] = useState({});
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
+  const [loggedIn, setLoggedIn] = useState(false);
   // GETTING PRIMARY DATA FROM THE SERVER
   useEffect(() => {
     Promise.all([api.getUserInfo(), api.getInitialCards()])
@@ -83,6 +91,7 @@ function App() {
     setEditProfilePopupClass(false);
     setAddPlacePopupClass(false);
     setDeleteCardPopupClass(false);
+    setInfoTooltipPopupClass(false);
     setSelectedCard(null);
     setCardToDelete({});
   }
@@ -169,17 +178,33 @@ function App() {
   return (
     <div className="page__content">
       <CurrentUserContext.Provider value={currentUser}>
-        <Header />
-        <Main
-          cards={cards}
-          onEditAvatar={handleEditAvatarClick}
-          onEditProfile={handleEditProfileClick}
-          onAddPlace={handleAddPlaceClick}
-          onCardClick={handleCardClick}
-          onCardLike={handleCardLike}
-          onCardDelete={handleDeleteClick}
-        />
-        <Footer />
+        <Routes>
+          <Route path="/" element={<AppLayout />}>
+            <Route index element={
+              <ProtectedRouteElement 
+                element={Main}
+                cards={cards}
+                onEditAvatar={handleEditAvatarClick}
+                onEditProfile={handleEditProfileClick}
+                onAddPlace={handleAddPlaceClick}
+                onCardClick={handleCardClick}
+                onCardLike={handleCardLike}
+                onCardDelete={handleDeleteClick}
+                loggedIn={loggedIn}
+              />}
+            />
+            <Route path="/sign-in" element={
+              <Login 
+                onLoading={isLoginLoading}
+              />}
+            />
+            <Route path="/sign-up" element={
+              <Register
+                onLoading={isRegistrLoading}
+              />}
+            />
+          </Route>
+        </Routes>
         <EditAvatarPopup
           isOpen={isEditAvatarPopupOpen}
           onClose={closeAllPopups}
@@ -206,6 +231,7 @@ function App() {
           card={cardToDelete}
         />
         <ImagePopup card={selectedCard} onClose={closeAllPopups} />
+        <InfoTooltip isOpen={isInfoTooltipPopupOpen} onClose={closeAllPopups} />
         <Preloader isActive={isPreloaderActive} />
       </CurrentUserContext.Provider>
     </div>

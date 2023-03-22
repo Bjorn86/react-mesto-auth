@@ -34,16 +34,16 @@ function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar, onLoading }) {
           form="avatar-edit"
           required
           placeholder="Ссылка на картинку"
-          className={`popup__form-input ${
-            errors.avatar ? "popup__form-input_type_error" : ""
+          className={`form__input ${
+            errors.avatar ? "form__input_type_error" : ""
           }`}
           id="avatar-link-input"
           onChange={onChange}
           value={values.avatar || ""}
         />
         <span
-          className={`popup__form-input-error ${
-            errors.avatar ? "popup__form-input-error_active" : ""
+          className={`form__input-error ${
+            errors.avatar ? "form__input-error_active" : ""
           }`}
         >
           {errors.avatar || ""}

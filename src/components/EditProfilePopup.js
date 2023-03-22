@@ -32,7 +32,7 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser, onLoading }) {
       onSubmit={handleSubmit}
       isFormValid={isFormValid}
     >
-      <label className="popup__input-wrapper">
+      <label className="form__input-wrapper">
         <input
           type="text"
           name="name"
@@ -41,22 +41,22 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser, onLoading }) {
           placeholder="Введите ваше имя"
           minLength="2"
           maxLength="40"
-          className={`popup__form-input ${
-            errors.name ? "popup__form-input_type_error" : ""
+          className={`form__input ${
+            errors.name ? "form__input_type_error" : ""
           }`}
           id="name-input"
           onChange={onChange}
           value={values.name || ""}
         />
         <span
-          className={`popup__form-input-error ${
-            errors.name ? "popup__form-input-error_active" : ""
+          className={`form__input-error ${
+            errors.name ? "form__input-error_active" : ""
           }`}
         >
           {errors.name || ""}
         </span>
       </label>
-      <label className="popup__input-wrapper">
+      <label className="form__input-wrapper">
         <input
           type="text"
           name="about"
@@ -65,16 +65,16 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser, onLoading }) {
           placeholder="Опишите кто вы"
           minLength="2"
           maxLength="200"
-          className={`popup__form-input ${
-            errors.about ? "popup__form-input_type_error" : ""
+          className={`form__input ${
+            errors.about ? "form__input_type_error" : ""
           }`}
           id="about-input"
           onChange={onChange}
           value={values.about || ""}
         />
         <span
-          className={`popup__form-input-error ${
-            errors.about ? "popup__form-input-error_active" : ""
+          className={`form__input-error ${
+            errors.about ? "form__input-error_active" : ""
           }`}
         >
           {errors.about || ""}
