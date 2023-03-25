@@ -18,11 +18,11 @@
 
 ### Страница проекта
 
-[Ссылка на страницу проекта](https://bjorn86.github.io/mesto-react-auth/ "Место (на React)")
+[Ссылка на страницу проекта](https://bjorn86.github.io/react-mesto-auth/ "Место (на React)")
 
 ### Сборка проекта
 
-[Ссылка на ветку собранного проекта](https://github.com/Bjorn86/mesto-react-auth/tree/gh-pages "Ветка")
+[Ссылка на ветку собранного проекта](https://github.com/Bjorn86/react-mesto-auth/tree/gh-pages "Ветка")
 
 ### Макет проекта
 
