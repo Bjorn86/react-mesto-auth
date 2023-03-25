@@ -19,10 +19,11 @@ function AuthScreen({
           id={`${name}`}
           noValidate
           className="form form_place_authorization"
-          /* onSubmit={onSubmit} */
+          onSubmit={onSubmit}
         >
           {props.children}
           <button
+            type="submit"
             form={`${name}`}
             className="form__btn-submit form__btn-submit_place_authorization"
             disabled={isFormValid ? false : true}

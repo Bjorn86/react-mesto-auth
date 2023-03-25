@@ -7,12 +7,13 @@ function PopupWithForm({
   onClose,
   onSubmit,
   isFormValid,
+  onOverlayClick,
   ...props
 }) {
   return (
     <div
       className={`popup popup_type_${name} ${isOpen ? "popup_opened" : ""}`}
-      onMouseDown={(e) => e.target === e.currentTarget && onClose()}
+      onMouseDown={onOverlayClick}
     >
       <div className="popup__item-container">
         <h2 className="popup__title">{title}</h2>

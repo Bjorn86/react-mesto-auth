@@ -5,7 +5,13 @@ import useValidation from "../utils/useValidation";
 import PopupWithForm from "./PopupWithForm";
 
 // EDIT AVATAR POPUP COMPONENT
-function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar, onLoading }) {
+function EditAvatarPopup({
+  isOpen,
+  onClose,
+  onUpdateAvatar,
+  onLoading,
+  onOverlayClick,
+}) {
   // VALIDATION CUSTOM HOOK
   const { values, errors, isFormValid, onChange, resetValidation } = useValidation();
   // RESET INPUT VALUE
@@ -26,6 +32,7 @@ function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar, onLoading }) {
       onClose={onClose}
       onSubmit={handleSubmit}
       isFormValid={isFormValid}
+      onOverlayClick={onOverlayClick}
     >
       <label className="popup__input-wrapper">
         <input

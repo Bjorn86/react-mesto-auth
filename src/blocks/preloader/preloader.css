@@ -6,5 +6,5 @@
   visibility: hidden;
   left: 0;
   top: 0;
-  background: url('../../images/preloader.svg') center center/auto no-repeat, rgba(0, 0, 0, .9);
+  background: url("../../images/preloader.svg") center center/auto no-repeat, rgb(0, 0, 0);
 }

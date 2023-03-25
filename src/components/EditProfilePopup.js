@@ -8,7 +8,13 @@ import PopupWithForm from "./PopupWithForm";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
 // EDIT PROFILE POPUP COMPONENT
-function EditProfilePopup({ isOpen, onClose, onUpdateUser, onLoading }) {
+function EditProfilePopup({
+  isOpen,
+  onClose,
+  onUpdateUser,
+  onLoading,
+  onOverlayClick,
+}) {
   // VALIDATION CUSTOM HOOK
   const { values, errors, isFormValid, onChange, resetValidation } = useValidation();
   // CONTEXT VARIABLES
@@ -31,6 +37,7 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser, onLoading }) {
       onClose={onClose}
       onSubmit={handleSubmit}
       isFormValid={isFormValid}
+      onOverlayClick={onOverlayClick}
     >
       <label className="form__input-wrapper">
         <input

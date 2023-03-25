@@ -1,12 +1,12 @@
 import { useCallback, useState } from "react";
 
-//
+// USE VALIDATION CUSTOM HOOK
 function useValidation() {
-  //
+  // STATE VARIABLES WITH HOOKS
   const [values, setValues] = useState({});
   const [errors, setErrors] = useState({});
   const [isFormValid, setFormValid] = useState(false);
-  //
+  // HANDLE INPUTS CHANGE
   function onChange(e) {
     const { name, value } = e.target;
     const error = e.target.validationMessage;
@@ -15,7 +15,7 @@ function useValidation() {
     setErrors((errors) => ({ ...errors, [name]: error }));
     setFormValid(formValid);
   }
-  //
+  // HANDLE RESET VALIDATION ERRORS
   const resetValidation = useCallback(
     (isFormValid = false, values = {}, errors = {}) => {
       setFormValid(isFormValid);

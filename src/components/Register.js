@@ -1,23 +1,23 @@
-import { useEffect } from "react";
 import useValidation from "../utils/useValidation";
 
 // IMPORT COMPONENTS
 import AuthScreen from "./AuthScreen";
 
 // LOGIN COMPONENT
-function Register({ onLoading }) {
+function Register({ onRegistr, onLoading }) {
   // VALIDATION CUSTOM HOOK
-  const { values, errors, isFormValid, onChange, resetValidation } = useValidation();
-  // RESET INPUT VALUE
-  /* useEffect(() => {
-    resetValidation();
-  }, [resetValidation]); */
+  const { values, errors, isFormValid, onChange } = useValidation();
+  // HANDLE SUBMIT
+  function handleSubmit(e) {
+    e.preventDefault();
+    onRegistr(values);
+  }
   return (
     <AuthScreen
       name="registr"
       title="Регистрация"
       buttonText={onLoading ? "Регистрация..." : "Зарегистрироваться"}
-      /* onSubmit={handleSubmit} */
+      onSubmit={handleSubmit}
       isFormValid={isFormValid}
     >
       <label className="form__input-wrapper">

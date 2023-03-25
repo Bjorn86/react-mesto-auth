@@ -5,7 +5,14 @@ import useValidation from "../utils/useValidation";
 import PopupWithForm from "./PopupWithForm";
 
 // DELETE CARD POPUP COMPONENT
-function DeleteCardPopup({ isOpen, onClose, onDeleteCard, onLoading, card }) {
+function DeleteCardPopup({
+  isOpen,
+  onClose,
+  onDeleteCard,
+  onLoading,
+  card,
+  onOverlayClick,
+}) {
   // VALIDATION CUSTOM HOOK
   const { isFormValid, resetValidation } = useValidation();
   // RESET INPUTS VALUE
@@ -26,6 +33,7 @@ function DeleteCardPopup({ isOpen, onClose, onDeleteCard, onLoading, card }) {
       onClose={onClose}
       onSubmit={handleSubmit}
       isFormValid={isFormValid}
+      onOverlayClick={onOverlayClick}
     />
   );
 }

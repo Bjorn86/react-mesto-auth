@@ -1,19 +1,17 @@
-import { Link } from "react-router-dom";
+// IMPORT COMPONENTS
+import NavBar from "./NavBar";
 
 // HEADER COMPONENT
-function Header() {
+function Header({ email, onHamburgerClick, isOpen, onLogOut }) {
   return (
     <header className="header">
       <div className="logo header__logo"></div>
-      {window.location.href.indexOf("sign-in") > -1 ? (
-        <Link to="/sign-up" className="header__link">
-          Регистрация
-        </Link>
-      ) : (
-        <Link to="/sign-in" className="header__link">
-          Войти
-        </Link>
-      )}
+      <NavBar
+        email={email}
+        isOpen={isOpen}
+        onHamburgerClick={onHamburgerClick}
+        onLogOut={onLogOut}
+      />
     </header>
   );
 }

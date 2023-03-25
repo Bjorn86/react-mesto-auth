@@ -5,7 +5,13 @@ import useValidation from "../utils/useValidation";
 import PopupWithForm from "./PopupWithForm";
 
 // ADD PLACE POPUP COMPONENT
-function AddPlacePopup({ isOpen, onClose, onAddPlace, onLoading }) {
+function AddPlacePopup({
+  isOpen,
+  onClose,
+  onAddPlace,
+  onLoading,
+  onOverlayClick,
+}) {
   // VALIDATION CUSTOM HOOK
   const { values, errors, isFormValid, onChange, resetValidation } = useValidation();
   // RESET INPUTS VALUE
@@ -26,6 +32,7 @@ function AddPlacePopup({ isOpen, onClose, onAddPlace, onLoading }) {
       onClose={onClose}
       onSubmit={handleSubmit}
       isFormValid={isFormValid}
+      onOverlayClick={onOverlayClick}
     >
       <label className="form__input-wrapper">
         <input

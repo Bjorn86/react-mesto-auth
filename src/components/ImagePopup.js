@@ -1,11 +1,11 @@
 // IMAGE POPUP COMPONENT
-function ImagePopup({ card, onClose }) {
+function ImagePopup({ card, onClose, onOverlayClick }) {
   return (
     <div
       className={`popup popup_type_img popup_theme_darker ${
         card ? "popup_opened" : ""
       }`}
-      onMouseDown={(e) => e.target === e.currentTarget && onClose()}
+      onMouseDown={onOverlayClick}
     >
       <div className="popup__img-container">
         <button
