@@ -2,7 +2,7 @@
 function Footer() {
   return (
     <footer className="footer">
-      <p className="footer__copyright">&copy; 2022 Данила Легкобытов</p>
+      <p className="footer__copyright">&copy; {new Date().getFullYear()} Данила Легкобытов</p>
     </footer>
   );
 }

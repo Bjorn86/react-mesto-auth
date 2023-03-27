@@ -62,9 +62,9 @@
 /* POPUP */
 @import url('./blocks/popup/popup.css');
 @import url('./blocks/popup/_opened/popup_opened.css');
-@import url('./blocks/popup/_theme/popup_theme_darker.css');
-@import url('./blocks/popup/__item-container/popup__item-container.css');
-@import url('./blocks/popup/__img-container/popup__img-container.css');
+@import url('./blocks/popup/_type/popup_type_img.css');
+@import url('./blocks/popup/__container/popup__container.css');
+@import url('./blocks/popup/__container/_type/popup__container_type_form.css');
 @import url('./blocks/popup/__figure-wrapper/popup__figure-wrapper.css');
 @import url('./blocks/popup/__img/popup__img.css');
 @import url('./blocks/popup/__img-caption/popup__img-caption.css');

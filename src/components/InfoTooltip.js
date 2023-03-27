@@ -1,5 +1,8 @@
+// IMPORT COMPONENTS
+import Popup from "./Popup";
+
 // INFORMATION TOOLTIP COMPONENT
-function InfoTooltip({ isOpen, onClose, status, onOverlayClick }) {
+function InfoTooltip({ isOpen, onClose, status }) {
   // HANDLE CLASS TOGGLE
   function handleClassToggle(status) {
     if (status === "success") {
@@ -21,24 +24,18 @@ function InfoTooltip({ isOpen, onClose, status, onOverlayClick }) {
     }
   }
   return (
-    <div
-      className={`popup popup_type_info ${isOpen ? "popup_opened" : ""}`}
-      onMouseDown={onOverlayClick}
+    <Popup
+      isOpen={isOpen}
+      onClose={onClose}
+      type="form"
     >
-      <div className="popup__item-container">
-        <button
-          type="button"
-          className="popup__btn-close"
-          onClick={onClose}
-        ></button>
-        <div className="popup__status-wrapper">
-          <div
-            className={`popup__status-icon ${handleClassToggle(status)}`}
-          ></div>
-          <p className="popup__status-text">{handleTextToggle(status)}</p>
-        </div>
+      <div className="popup__status-wrapper">
+        <div
+          className={`popup__status-icon ${handleClassToggle(status)}`}
+        ></div>
+        <p className="popup__status-text">{handleTextToggle(status)}</p>
       </div>
-    </div>
+    </Popup>
   );
 }
 

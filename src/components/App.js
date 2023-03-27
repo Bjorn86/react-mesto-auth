@@ -31,14 +31,9 @@ function App() {
   const [isDeleteCardPopupOpen, setDeleteCardPopupClass] = useState(false);
   const [isInfoTooltipPopupOpen, setInfoTooltipPopupClass] = useState(false);
   const [isHamburgerOpen, setHamburgerClass] = useState(false);
-  const [isEditAvatarPopupOnLoading, setEditAvatarPopupButtonText] = useState(false);
-  const [isEditProfilePopupOnLoading, setEditProfilePopupButtonText] = useState(false);
-  const [isAddPlacePopupOnLoading, setAddPlacePopupButtonText] = useState(false);
-  const [isDeleteCardPopupOnLoading, setDeleteCardPopupButtonText] = useState(false);
-  const [isLoginOnLoading, setLoginButtonText] = useState(false);
-  const [isRegistrationOnLoading, setRegistrationButtonText] = useState(false);
-  const [isPreloaderActive, setPreloaderClass] = useState(true);
-  const [InfoTooltipStatus, setInfoTooltipStatus] = useState("");
+  const [isLoading, setLoading] = useState(false);
+  const [isPreloaderActive, setPreloaderClass] = useState(false);
+  const [infoTooltipStatus, setInfoTooltipStatus] = useState("");
   const [selectedCard, setSelectedCard] = useState(null);
   const [cardToDelete, setCardToDelete] = useState({});
   const [currentUser, setCurrentUser] = useState({});
@@ -51,7 +46,8 @@ function App() {
 
   // GETTING PRIMARY DATA FROM THE SERVER
   useEffect(() => {
-    Promise.all([api.getUserInfo(), api.getInitialCards()])
+    setPreloaderClass(true);
+    loggedIn && Promise.all([api.getUserInfo(), api.getInitialCards()])
       .then(([userData, cardsData]) => {
         setCurrentUser(userData);
         setCards(cardsData);
@@ -62,7 +58,7 @@ function App() {
       .finally(() => {
         setPreloaderClass(false);
       });
-  }, []);
+  }, [loggedIn]);
 
   // HANDLE EDIT AVATAR CLICK
   const handleEditAvatarClick = useCallback(() => {
@@ -102,16 +98,6 @@ function App() {
     setInfoTooltipStatus("");
   }, []);
 
-  // HANDLE CLOSE BY CLICK ON OVERLAY
-  const closeByClickOnOverlay = useCallback(
-    (evt) => {
-      if (evt.target === evt.currentTarget) {
-        closeAllPopups();
-      }
-    },
-    [closeAllPopups]
-  );
-
   // HANDLE HAMBURGER CLICK
   const handleHamburgerClick = useCallback(() => {
     if (isHamburgerOpen === false) {
@@ -142,7 +128,7 @@ function App() {
   // HANDLE CARD DELETE
   const handleCardDelete = useCallback(
     (card) => {
-      setDeleteCardPopupButtonText(true);
+      setLoading(true);
       api
         .deleteCard(card._id)
         .then(() => {
@@ -153,8 +139,7 @@ function App() {
           console.log(err);
         })
         .finally(() => {
-          setDeleteCardPopupButtonText(false);
-          setCardToDelete({});
+          setLoading(false);
         });
     },
     [closeAllPopups]
@@ -163,7 +148,7 @@ function App() {
   // HANDLE UPDATE USER
   const handleUpdateUser = useCallback(
     (userData) => {
-      setEditProfilePopupButtonText(true);
+      setLoading(true);
       api
         .setUserInfo(userData)
         .then((newUserData) => {
@@ -176,7 +161,7 @@ function App() {
           console.log(err);
         })
         .finally(() => {
-          setEditProfilePopupButtonText(false);
+          setLoading(false);
         });
     },
     [closeAllPopups]
@@ -185,7 +170,7 @@ function App() {
   // HANDLE UPDATE AVATAR
   const handleUpdateAvatar = useCallback(
     (avatarData) => {
-      setEditAvatarPopupButtonText(true);
+      setLoading(true);
       api
         .setUserAvatar(avatarData)
         .then((newAvatarData) => {
@@ -198,7 +183,7 @@ function App() {
           console.log(err);
         })
         .finally(() => {
-          setEditAvatarPopupButtonText(false);
+          setLoading(false);
         });
     },
     [closeAllPopups]
@@ -207,7 +192,7 @@ function App() {
   // HANDLE ADD PLACE CARD
   const handleAddPlaceSubmit = useCallback(
     (cardData) => {
-      setAddPlacePopupButtonText(true);
+      setLoading(true);
       api
         .sendNewCardInfo(cardData)
         .then((newCardsData) => {
@@ -220,7 +205,7 @@ function App() {
           console.log(err);
         })
         .finally(() => {
-          setAddPlacePopupButtonText(false);
+          setLoading(false);
         });
     },
     [cards, closeAllPopups]
@@ -229,7 +214,7 @@ function App() {
   // HANDLE USER REGISTRATION
   const handleUserRegistration = useCallback(
     async (userData) => {
-      setRegistrationButtonText(true);
+      setLoading(true);
       try {
         const data = await authApi.register(userData);
         if (data) {
@@ -239,8 +224,10 @@ function App() {
         }
       } catch (err) {
         console.error(err);
+        setInfoTooltipStatus("fail");
+        setInfoTooltipPopupClass(true);
       } finally {
-        setRegistrationButtonText(false);
+        setLoading(false);
       }
     },
     [navigate]
@@ -249,7 +236,7 @@ function App() {
   // HANDLE USER AUTHORIZATION
   const handleUserAuthorization = useCallback(
     async (userData) => {
-      setLoginButtonText(true);
+      setLoading(true);
       try {
         const data = await authApi.authorize(userData);
         if (data.token) {
@@ -263,7 +250,7 @@ function App() {
         setInfoTooltipStatus("fail");
         setInfoTooltipPopupClass(true);
       } finally {
-        setLoginButtonText(false);
+        setLoading(false);
       }
     },
     [navigate]
@@ -272,6 +259,7 @@ function App() {
   // TOKEN CHECK
   const tokenCheck = useCallback(async () => {
     if (localStorage.getItem("token")) {
+      setPreloaderClass(true);
       const token = localStorage.getItem("token");
       if (token) {
         try {
@@ -284,6 +272,8 @@ function App() {
           navigate("/", { replace: true });
         } catch (err) {
           console.error(err);
+        } finally {
+          setPreloaderClass(false);
         }
       }
     }
@@ -302,17 +292,6 @@ function App() {
   useEffect(() => {
     tokenCheck();
   }, [tokenCheck]);
-
-  // HANDLE CLOSE POPUP BY ESC BUTTON
-  useEffect(() => {
-    function handleEscClose(e) {
-      if (e.key === "Escape") {
-        closeAllPopups();
-      }
-    }
-    window.addEventListener("keydown", handleEscClose);
-    return () => window.removeEventListener("keydown", handleEscClose);
-  }, [closeAllPopups]);
 
   return (
     <div className="page__content">
@@ -350,7 +329,7 @@ function App() {
               element={
                 <Login
                   onLogin={handleUserAuthorization}
-                  onLoading={isLoginOnLoading}
+                  onLoading={isLoading}
                 />
               }
             />
@@ -359,7 +338,7 @@ function App() {
               element={
                 <Register
                   onRegistr={handleUserRegistration}
-                  onLoading={isRegistrationOnLoading}
+                  onLoading={isLoading}
                 />
               }
             />
@@ -369,41 +348,35 @@ function App() {
           isOpen={isEditAvatarPopupOpen}
           onClose={closeAllPopups}
           onUpdateAvatar={handleUpdateAvatar}
-          onLoading={isEditAvatarPopupOnLoading}
-          onOverlayClick={closeByClickOnOverlay}
+          onLoading={isLoading}
         />
         <EditProfilePopup
           isOpen={isEditProfilePopupOpen}
           onClose={closeAllPopups}
           onUpdateUser={handleUpdateUser}
-          onLoading={isEditProfilePopupOnLoading}
-          onOverlayClick={closeByClickOnOverlay}
+          onLoading={isLoading}
         />
         <AddPlacePopup
           isOpen={isAddPlacePopupOpen}
           onClose={closeAllPopups}
           onAddPlace={handleAddPlaceSubmit}
-          onLoading={isAddPlacePopupOnLoading}
-          onOverlayClick={closeByClickOnOverlay}
+          onLoading={isLoading}
         />
         <DeleteCardPopup
           isOpen={isDeleteCardPopupOpen}
           onClose={closeAllPopups}
           onDeleteCard={handleCardDelete}
-          onLoading={isDeleteCardPopupOnLoading}
+          onLoading={isLoading}
           card={cardToDelete}
-          onOverlayClick={closeByClickOnOverlay}
         />
         <ImagePopup
           card={selectedCard}
           onClose={closeAllPopups}
-          onOverlayClick={closeByClickOnOverlay}
         />
         <InfoTooltip
           isOpen={isInfoTooltipPopupOpen}
           onClose={closeAllPopups}
-          status={InfoTooltipStatus}
-          onOverlayClick={closeByClickOnOverlay}
+          status={infoTooltipStatus}
         />
         <Preloader isActive={isPreloaderActive} />
       </CurrentUserContext.Provider>
@@ -412,5 +385,3 @@ function App() {
 }
 
 export default App;
-
-/* TODO Пройтись по всем файлам Prettier */

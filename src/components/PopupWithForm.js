@@ -1,3 +1,7 @@
+// IMPORT COMPONENTS
+import Form from "./Form";
+import Popup from "./Popup";
+
 // POPUP WITH FORM COMPONENT
 function PopupWithForm({
   name,
@@ -7,41 +11,24 @@ function PopupWithForm({
   onClose,
   onSubmit,
   isFormValid,
-  onOverlayClick,
   ...props
 }) {
   return (
-    <div
-      className={`popup popup_type_${name} ${isOpen ? "popup_opened" : ""}`}
-      onMouseDown={onOverlayClick}
+    <Popup
+      isOpen={isOpen}
+      onClose={onClose}
+      type="form"
     >
-      <div className="popup__item-container">
-        <h2 className="popup__title">{title}</h2>
-        <button
-          type="button"
-          className="popup__btn-close"
-          onClick={onClose}
-        ></button>
-        <form
-          action="#"
-          name={`${name}`}
-          id={`${name}`}
-          className={`form form_type_${name}`}
-          noValidate
-          onSubmit={onSubmit}
-        >
-          {props.children}
-          <button
-            type="submit"
-            form={`${name}`}
-            className="form__btn-submit"
-            disabled={isFormValid ? false : true}
-          >
-            {buttonText}
-          </button>
-        </form>
-      </div>
-    </div>
+      <h2 className="popup__title">{title}</h2>
+      <Form
+        name={name}
+        buttonText={buttonText}
+        onSubmit={onSubmit}
+        isFormValid={isFormValid}
+      >
+        {props.children}
+      </Form>
+    </Popup>
   );
 }
 

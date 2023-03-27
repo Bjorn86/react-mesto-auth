@@ -1,5 +1,8 @@
 import { Link } from "react-router-dom";
 
+// IMPORT COMPONENTS
+import Form from "./Form";
+
 // AUTHORIZATION SCREEN COMPONENT
 function AuthScreen({
   name,
@@ -13,24 +16,14 @@ function AuthScreen({
     <section className="authorization">
       <div className="authorization__wrapper">
         <h2 className="authorization__title">{title}</h2>
-        <form
-          action="#"
-          name={`${name}`}
-          id={`${name}`}
-          noValidate
-          className="form form_place_authorization"
+        <Form
+          name={name}
+          buttonText={buttonText}
           onSubmit={onSubmit}
+          isFormValid={isFormValid}
         >
           {props.children}
-          <button
-            type="submit"
-            form={`${name}`}
-            className="form__btn-submit form__btn-submit_place_authorization"
-            disabled={isFormValid ? false : true}
-          >
-            {buttonText}
-          </button>
-        </form>
+        </Form>
         {name === "registr" && (
           <p className="authorization__text">
             Уже зарегистрированы?{" "}
