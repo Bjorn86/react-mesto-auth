@@ -32,7 +32,7 @@ function App() {
   const [isInfoTooltipPopupOpen, setInfoTooltipPopupClass] = useState(false);
   const [isHamburgerOpen, setHamburgerClass] = useState(false);
   const [isLoading, setLoading] = useState(false);
-  const [isPreloaderActive, setPreloaderClass] = useState(false);
+  const [isPreloaderActive, setPreloaderClass] = useState(true);
   const [infoTooltipStatus, setInfoTooltipStatus] = useState("");
   const [selectedCard, setSelectedCard] = useState(null);
   const [cardToDelete, setCardToDelete] = useState({});
@@ -46,7 +46,6 @@ function App() {
 
   // GETTING PRIMARY DATA FROM THE SERVER
   useEffect(() => {
-    setPreloaderClass(true);
     loggedIn && Promise.all([api.getUserInfo(), api.getInitialCards()])
       .then(([userData, cardsData]) => {
         setCurrentUser(userData);
@@ -55,9 +54,6 @@ function App() {
       .catch((err) => {
         console.log(err);
       })
-      .finally(() => {
-        setPreloaderClass(false);
-      });
   }, [loggedIn]);
 
   // HANDLE EDIT AVATAR CLICK
@@ -258,24 +254,23 @@ function App() {
 
   // TOKEN CHECK
   const tokenCheck = useCallback(async () => {
-    if (localStorage.getItem("token")) {
-      setPreloaderClass(true);
-      const token = localStorage.getItem("token");
-      if (token) {
-        try {
-          const user = await authApi.getContent(token);
-          if (!user) {
-            throw new Error("Данные пользователя отсутствует");
-          }
-          setUserEmail(user.data.email);
-          setLoggedIn(true);
-          navigate("/", { replace: true });
-        } catch (err) {
-          console.error(err);
-        } finally {
-          setPreloaderClass(false);
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const user = await authApi.getContent(token);
+        if (!user) {
+          throw new Error("Данные пользователя отсутствует");
         }
+        setUserEmail(user.data.email);
+        setLoggedIn(true);
+        navigate("/", { replace: true });
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setPreloaderClass(false);
       }
+    } else {
+      setPreloaderClass(false);
     }
   }, [navigate]);
 
@@ -292,6 +287,11 @@ function App() {
   useEffect(() => {
     tokenCheck();
   }, [tokenCheck]);
+
+  // PRELOADER RENDER
+  if (isPreloaderActive) {
+    return <Preloader isActive={isPreloaderActive} />
+  }
 
   return (
     <div className="page__content">
@@ -378,7 +378,6 @@ function App() {
           onClose={closeAllPopups}
           status={infoTooltipStatus}
         />
-        <Preloader isActive={isPreloaderActive} />
       </CurrentUserContext.Provider>
     </div>
   );
