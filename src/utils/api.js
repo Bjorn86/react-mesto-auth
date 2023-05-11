@@ -1,88 +1,73 @@
-// API CLASS
-class Api {
-  constructor(options) {
-    this._serverUrl = options.baseUrl;
-    this._headers = options.headers;
+// VARIABLES
+const BASE_URL = "https://api.mesto.ld-webdev.nomoredomains.monster";
+
+// MAKE REQUEST TO THE SERVER
+function makeRequest(url, method, body) {
+  const headers = { "Content-Type": "application/json" };
+  const config = { method, headers, credentials: "include" };
+  if (body !== undefined) {
+    config.body = JSON.stringify(body);
   }
-  // CHECKING THE SERVER RESPONSE METHOD
-  _checkResponse(res) {
-    return res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`);
-  }
-  // REQUEST METHOD
-  _request(url, options) {
-    return fetch(url, options).then(this._checkResponse)
-  }
-  // GET USER INFO METHOD
-  getUserInfo() {
-    return this._request(`${this._serverUrl}/users/me`, {
-      headers: this._headers
-    })
-  }
-  // SEND USER INFO METHOD
-  setUserInfo(userData) {
-    return this._request(`${this._serverUrl}/users/me`, {
-      method: 'PATCH',
-      headers: this._headers,
-      body: JSON.stringify({
-        name: `${userData.name}`,
-        about: `${userData.about}`
-      })
-    })
-  }
-  // SET USER AVATAR METHOD
-  setUserAvatar(avatarData) {
-    return this._request(`${this._serverUrl}/users/me/avatar`, {
-      method: 'PATCH',
-      headers: this._headers,
-      body: JSON.stringify({
-        avatar: `${avatarData.avatar}`
-      })
-    })
-  }
-  // GET INITIAL CARDS METHOD
-  getInitialCards() {
-    return this._request(`${this._serverUrl}/cards`, {
-      headers: this._headers
-    })
-  }
-  // SEND NEW CARD INFO METHOD
-  sendNewCardInfo(cardData) {
-    return this._request(`${this._serverUrl}/cards`, {
-      method: 'POST',
-      headers: this._headers,
-      body: JSON.stringify({
-        name: `${cardData.name}`,
-        link: `${cardData.link}`
-      })
-    })
-  }
-  // DELETE CARD METHOD
-  deleteCard(id) {
-    return this._request(`${this._serverUrl}/cards/${id}`, {
-      method: 'DELETE',
-      headers: this._headers
-    })
-  }
-  // CHANGE LIKE CARD STATUS METHOD
-  changeLikeCardStatus(id, isLiked) {
-    if (isLiked) {
-      return this._request(`${this._serverUrl}/cards/${id}/likes`, {
-        method: 'DELETE',
-        headers: this._headers
-      })
-    } else {
-      return this._request(`${this._serverUrl}/cards/${id}/likes`, {
-        method: 'PUT',
-        headers: this._headers
-      })
-    }
-  }
+  return fetch(`${BASE_URL}${url}`, config).then((res) => {
+    return res.ok
+      ? res.json()
+      : Promise.reject(`Ошибка: ${res.status} ${res.statusText}`);
+  });
 }
 
-export const api = new Api({
-  baseUrl: 'https://mesto.nomoreparties.co/v1/cohort-59',
-  headers: {
-    authorization: '1625a9d8-48f8-436e-897b-1626c226f4c0',
-    'Content-Type': 'application/json'
-  }
-})
+// REGISTRATION USER
+export function register({ password, email }) {
+  return makeRequest("/signup", "POST", { password, email });
+}
+
+// AUTHORIZATION USER
+export function authorize({ password, email }) {
+  return makeRequest("/signin", "POST", { password, email });
+}
+
+// LOGOUT USER
+export function logout() {
+  return makeRequest("/users/me", "DELETE");
+}
+
+// GET USER CONTENT FROM THE SERVER
+export function getContent() {
+  return makeRequest("/users/me", "GET");
+}
+
+// GET USER INFO
+export function getUserInfo() {
+  return makeRequest("/users/me", "GET");
+}
+
+// SEND USER INFO
+export function setUserInfo({ name, about }) {
+  return makeRequest("/users/me", "PATCH", { name, about });
+}
+
+// SET USER AVATAR
+export function setUserAvatar({ avatar }) {
+  return makeRequest("/users/me/avatar", "PATCH", { avatar });
+}
+
+// GET INITIAL CARDS
+export function getInitialCards() {
+  return makeRequest("/cards", "GET");
+}
+
+// SEND NEW CARD INFO
+export function sendNewCardInfo({ name, link }) {
+  return makeRequest("/cards", "POST", { name, link });
+}
+
+// DELETE CARD
+export function deleteCard(id) {
+  return makeRequest(`/cards/${id}`, "DELETE");
+}
+
+// CHANGE LIKE CARD STATUS
+export function changeLikeCardStatus(id, isLiked) {
+  let method;
+  isLiked ? (method = "DELETE") : (method = "PUT");
+  return makeRequest(`/cards/${id}/likes`, method);
+}

@@ -14,13 +14,13 @@ import DeleteCardPopup from "./DeleteCardPopup";
 import InfoTooltip from "./InfoTooltip";
 import Preloader from "./Preloader";
 import ProtectedRouteElement from "./ProtectedRoute";
+import NotFound from "./NotFound";
 
 // IMPORT CONTEXT
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
 // IMPORT API'S CLASS INSTANCE
-import { api } from "../utils/api";
-import * as authApi from "../utils/authApi";
+import * as api from "../utils/api";
 
 // APP COMPONENT
 function App() {
@@ -46,14 +46,15 @@ function App() {
 
   // GETTING PRIMARY DATA FROM THE SERVER
   useEffect(() => {
-    loggedIn && Promise.all([api.getUserInfo(), api.getInitialCards()])
-      .then(([userData, cardsData]) => {
-        setCurrentUser(userData);
-        setCards(cardsData);
-      })
-      .catch((err) => {
-        console.log(err);
-      })
+    loggedIn &&
+      Promise.all([api.getUserInfo(), api.getInitialCards()])
+        .then(([userData, cardsData]) => {
+          setCurrentUser(userData);
+          setCards(cardsData.reverse());
+        })
+        .catch((err) => {
+          console.log(err);
+        });
   }, [loggedIn]);
 
   // HANDLE EDIT AVATAR CLICK
@@ -96,113 +97,99 @@ function App() {
 
   // HANDLE HAMBURGER CLICK
   const handleHamburgerClick = useCallback(() => {
-    if (isHamburgerOpen === false) {
-      setHamburgerClass(true);
-    } else {
-      setHamburgerClass(false);
-    }
+    setHamburgerClass(!isHamburgerOpen);
   }, [isHamburgerOpen]);
 
   // HANDLE CARD LIKE
   const handleCardLike = useCallback(
-    (card) => {
+    async (card) => {
       const isLiked = card.likes.some((item) => item._id === currentUser._id);
-      api
-        .changeLikeCardStatus(card._id, isLiked)
-        .then((newCard) => {
+      try {
+        const data = await api.changeLikeCardStatus(card._id, isLiked);
+        if (data) {
           setCards((state) =>
-            state.map((item) => (item._id === card._id ? newCard : item))
+            state.map((item) => (item._id === card._id ? data : item))
           );
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+        }
+      } catch (err) {
+        console.log(err);
+      }
     },
     [currentUser._id]
   );
 
   // HANDLE CARD DELETE
   const handleCardDelete = useCallback(
-    (card) => {
+    async (card) => {
       setLoading(true);
-      api
-        .deleteCard(card._id)
-        .then(() => {
+      try {
+        const data = await api.deleteCard(card._id);
+        if (data) {
           setCards((state) => state.filter((item) => item._id !== card._id));
           closeAllPopups();
-        })
-        .catch((err) => {
-          console.log(err);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
+        }
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setLoading(false);
+      }
     },
     [closeAllPopups]
   );
 
   // HANDLE UPDATE USER
   const handleUpdateUser = useCallback(
-    (userData) => {
+    async (userData) => {
       setLoading(true);
-      api
-        .setUserInfo(userData)
-        .then((newUserData) => {
-          setCurrentUser(newUserData);
-        })
-        .then(() => {
+      try {
+        const data = await api.setUserInfo(userData);
+        if (data) {
+          setCurrentUser(data);
           closeAllPopups();
-        })
-        .catch((err) => {
-          console.log(err);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
+        }
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setLoading(false);
+      }
     },
     [closeAllPopups]
   );
 
   // HANDLE UPDATE AVATAR
   const handleUpdateAvatar = useCallback(
-    (avatarData) => {
+    async (avatarData) => {
       setLoading(true);
-      api
-        .setUserAvatar(avatarData)
-        .then((newAvatarData) => {
-          setCurrentUser(newAvatarData);
-        })
-        .then(() => {
+      try {
+        const data = await api.setUserAvatar(avatarData);
+        if (data) {
+          setCurrentUser(data);
           closeAllPopups();
-        })
-        .catch((err) => {
-          console.log(err);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
+        }
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setLoading(false);
+      }
     },
     [closeAllPopups]
   );
 
   // HANDLE ADD PLACE CARD
   const handleAddPlaceSubmit = useCallback(
-    (cardData) => {
+    async (cardData) => {
       setLoading(true);
-      api
-        .sendNewCardInfo(cardData)
-        .then((newCardsData) => {
-          setCards([newCardsData, ...cards]);
-        })
-        .then(() => {
+      try {
+        const data = await api.sendNewCardInfo(cardData);
+        if (data) {
+          setCards([data, ...cards]);
           closeAllPopups();
-        })
-        .catch((err) => {
-          console.log(err);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
+        }
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setLoading(false);
+      }
     },
     [cards, closeAllPopups]
   );
@@ -212,7 +199,7 @@ function App() {
     async (userData) => {
       setLoading(true);
       try {
-        const data = await authApi.register(userData);
+        const data = await api.register(userData);
         if (data) {
           setInfoTooltipStatus("success");
           setInfoTooltipPopupClass(true);
@@ -234,9 +221,8 @@ function App() {
     async (userData) => {
       setLoading(true);
       try {
-        const data = await authApi.authorize(userData);
-        if (data.token) {
-          localStorage.setItem("token", data.token);
+        const data = await api.authorize(userData);
+        if (data) {
           setLoggedIn(true);
           setUserEmail(userData.email);
           navigate("/", { replace: true });
@@ -252,45 +238,46 @@ function App() {
     [navigate]
   );
 
-  // TOKEN CHECK
-  const tokenCheck = useCallback(async () => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      try {
-        const user = await authApi.getContent(token);
-        if (!user) {
-          throw new Error("Данные пользователя отсутствует");
-        }
-        setUserEmail(user.data.email);
-        setLoggedIn(true);
-        navigate("/", { replace: true });
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setPreloaderClass(false);
+  // USER LOGIN CHECK
+  const userLoginCheck = useCallback(async () => {
+    try {
+      const userData = await api.getContent();
+      if (!userData) {
+        throw new Error("Данные пользователя отсутствует");
       }
-    } else {
+      setUserEmail(userData.email);
+      setLoggedIn(true);
+      navigate("/", { replace: true });
+    } catch (err) {
+      console.error(err);
+    } finally {
       setPreloaderClass(false);
     }
   }, [navigate]);
 
-  // HANDLE USER LOGIN OUT
-  const handleUserLogOut = useCallback(() => {
-    localStorage.removeItem("token");
-    setLoggedIn(false);
-    setUserEmail("");
-    setHamburgerClass(false);
-    navigate("/sign-in", { replace: true });
+  // HANDLE USER LOGOUT
+  const handleUserLogOut = useCallback(async () => {
+    try {
+      const data = await api.logout();
+      if (data) {
+        setLoggedIn(false);
+        setUserEmail("");
+        setHamburgerClass(false);
+        navigate("/sign-in", { replace: true });
+      }
+    } catch (err) {
+      console.error(err);
+    }
   }, [navigate]);
 
   // CHECK USER LOGGED IN
   useEffect(() => {
-    tokenCheck();
-  }, [tokenCheck]);
+    userLoginCheck();
+  }, [userLoginCheck]);
 
   // PRELOADER RENDER
   if (isPreloaderActive) {
-    return <Preloader isActive={isPreloaderActive} />
+    return <Preloader isActive={isPreloaderActive} />;
   }
 
   return (
@@ -342,6 +329,7 @@ function App() {
                 />
               }
             />
+            <Route path="/*" element={<NotFound />} />
           </Route>
         </Routes>
         <EditAvatarPopup
@@ -369,10 +357,7 @@ function App() {
           onLoading={isLoading}
           card={cardToDelete}
         />
-        <ImagePopup
-          card={selectedCard}
-          onClose={closeAllPopups}
-        />
+        <ImagePopup card={selectedCard} onClose={closeAllPopups} />
         <InfoTooltip
           isOpen={isInfoTooltipPopupOpen}
           onClose={closeAllPopups}
