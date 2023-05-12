@@ -8,8 +8,8 @@ function Card({ card, onCardClick, onCardLike, onCardDelete }) {
   // CONTEXT VARIABLES
   const currentUser = useContext(CurrentUserContext);
   // OTHER VARIABLES
-  const isOwn = card.owner._id === currentUser._id;
-  const isLiked = card.likes.some((item) => item._id === currentUser._id);
+  const isOwn = card.owner === currentUser._id;
+  const isLiked = card.likes.some((item) => item === currentUser._id);
   // HANDLE CARD IMAGE CLICK
   function handleClick() {
     onCardClick(card);

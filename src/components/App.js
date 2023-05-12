@@ -103,7 +103,7 @@ function App() {
   // HANDLE CARD LIKE
   const handleCardLike = useCallback(
     async (card) => {
-      const isLiked = card.likes.some((item) => item._id === currentUser._id);
+      const isLiked = card.likes.some((item) => item === currentUser._id);
       try {
         const data = await api.changeLikeCardStatus(card._id, isLiked);
         if (data) {
